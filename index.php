@@ -1,51 +1,13 @@
 <?php 
 
 require_once __DIR__ . "/conexao.php";
+require_once  __DIR__ . "/funcoes.php";
 
-if($_SERVER['REQUEST_METHOD'] == 'POST'){
-  $nomeFilme = ucfirst($_POST['nome']) ?? '';
-  $notaFilme = $_POST['nota'] ?? '';
-
-  if (!empty($nomeFilme) && !empty($notaFilme)){
-    try {
-      $stmt = $pdo->prepare('INSERT INTO filmes (titulo, nota) VALUES (:titulo, :nota)');
-      $stmt->bindParam(':titulo', $nomeFilme);
-      $stmt->bindParam(':nota', $notaFilme);
-      $stmt->execute();
-    } catch (PDOException $e) {
-      echo "Não foi possível realizar a operação. Erro" . $e->getMessage();
-    }
-  }
-}
-
-if (isset($_GET['acao']) && $_GET['acao'] == 'excluir'){
-  if(!empty($_GET['id'])){
-    try {
-      $idFilme = $_GET['id'];
-      $stmt = $pdo->prepare('DELETE FROM filmes WHERE idfilmes = :id');
-      $stmt->bindParam(':id', $idFilme);
-      $stmt->execute();
-      header('Location: index.php');
-      exit();
-    } catch (PDOException $e){
-      echo "Erro em deletar o filme" . $e->getMessage();
-    }
-  }
-}
-
-
-try {
-  $stmt = $pdo->prepare('SELECT * FROM filmes');
-  $stmt->execute();
-  $resultados = $stmt->fetchAll();
-} catch (PDOException $e){
-  echo "Não foi possível verificar os filmes. Erro: " . $e->getMessage();
-}
+registrarFilme($pdo);
+excluirFilme($pdo);
+$resultados = listaDeFilmes($pdo);
 
 ?>
-
-
-
 
 
 <!DOCTYPE html>
