@@ -1,37 +1,46 @@
 <?php 
 
-$conteudoLista = file_get_contents("./lista.json");
-
-$arrayLista = json_decode($conteudoLista, true);
+require_once __DIR__ . "/conexao.php";
 
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
   $nomeFilme = ucfirst($_POST['nome']) ?? '';
   $notaFilme = $_POST['nota'] ?? '';
 
   if (!empty($nomeFilme) && !empty($notaFilme)){
-    $arrayLista[] = [
-      'nome' => $nomeFilme,
-      'nota' => $notaFilme
-    ];
+    try {
+      $stmt = $pdo->prepare('INSERT INTO filmes (titulo, nota) VALUES (:titulo, :nota)');
+      $stmt->bindParam(':titulo', $nomeFilme);
+      $stmt->bindParam(':nota', $notaFilme);
+      $stmt->execute();
+    } catch (PDOException $e) {
+      echo "Não foi possível realizar a operação. Erro" . $e->getMessage();
+    }
   }
 }
 
 if (isset($_GET['acao']) && $_GET['acao'] == 'excluir'){
-  if($_GET['filme'] != 0){
-    foreach ($arrayLista as $chave => $item){
-      if($item['nome'] == $_GET['filme']){
-        unset($arrayLista[$chave]);
-        break;
-      }
+  if(!empty($_GET['id'])){
+    try {
+      $idFilme = $_GET['id'];
+      $stmt = $pdo->prepare('DELETE FROM filmes WHERE idfilmes = :id');
+      $stmt->bindParam(':id', $idFilme);
+      $stmt->execute();
+      header('Location: index.php');
+      exit();
+    } catch (PDOException $e){
+      echo "Erro em deletar o filme" . $e->getMessage();
     }
   }
 }
 
 
-$conteudoLista = json_encode($arrayLista);
-
-file_put_contents("./lista.json", $conteudoLista);
-
+try {
+  $stmt = $pdo->prepare('SELECT * FROM filmes');
+  $stmt->execute();
+  $resultados = $stmt->fetchAll();
+} catch (PDOException $e){
+  echo "Não foi possível verificar os filmes. Erro: " . $e->getMessage();
+}
 
 ?>
 
@@ -74,7 +83,7 @@ file_put_contents("./lista.json", $conteudoLista);
 
           <h5>Filmes registrados</h5>
 
-          <?php if (count($arrayLista) == 0): ?>
+          <?php if (empty($resultados)): ?>
             <div class="container mt-3">
               <div class="alert alert-warning" role="alert">
                   <strong>Aviso!</strong> Você ainda não possui filmes registrados.
@@ -82,13 +91,27 @@ file_put_contents("./lista.json", $conteudoLista);
             </div>
 
           <?php else: ?>
-            <ul class="list-group">
-              <?php foreach ($arrayLista as $item): ?>
-                  <li class="list-group-item fs-5"> <?php echo $item['nome'] . ' - ' . $item['nota']; ?> 
-                    <a class="btn btn-danger btn-sm" href="?acao=excluir&filme=<?php echo $item['nome'] ?>" role="button">Excluir</a>
-                  </li>
-              <?php endforeach ?>
-            </ul>
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Filme</th>
+                  <th scope="col">Nota</th>
+                  <th scope="col">Excluir</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach ($resultados as $item): ?>
+                <tr>
+                  <th scope="row"> <?php echo $item['idfilmes']; ?> </th>
+                  <td> <?php echo $item['titulo']; ?> </td>
+                  <td> <?php echo $item['nota']; ?> </td>
+                  <td><a class="btn btn-danger btn-sm" role="button" href="?acao=excluir&id=<?php echo $item['idfilmes'] ?>">Excluir</a></td>
+                </tr>
+                <?php endforeach ?>
+              </tbody>
+            </table>
 
           <?php endif ?>
           
@@ -99,8 +122,3 @@ file_put_contents("./lista.json", $conteudoLista);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   </body>
 </html>
-
-<?php
-
-
-?>
