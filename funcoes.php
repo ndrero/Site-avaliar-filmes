@@ -15,8 +15,8 @@ function verificarPOST(){
 
 function registrarFilme($pdo){
   if(verificarPOST()){
-    $nomeFilme = ucfirst($_POST['nome']) ?? '';
-    $notaFilme = $_POST['nota'] ?? '';
+    $nomeFilme = ucfirst(trim($_POST['nome'] ?? ''));
+    $notaFilme = ucfirst(trim($_POST['nota'] ?? ''));
   
     if (!empty($nomeFilme) && !empty($notaFilme)){
       try {
@@ -69,8 +69,8 @@ function excluirFilme($pdo){
 
 function logarConta($pdo){
   if(verificarPOST()){
-    $usuario = $_POST['usuario'] ?? '';
-    $senha = $_POST['senha'] ?? '';
+    $usuario = ucfirst(trim($_POST['usuario'] ?? ''));
+    $senha = ucfirst(trim($_POST['senha'] ?? ''));
     
     if(!empty($usuario) && !empty($senha)){
       try {
@@ -102,10 +102,10 @@ function logarConta($pdo){
 
 #Registrar conta
 
-function criarConta(){
+function criarConta($pdo){
   if(verificarPOST()){
-    $usuario = $_POST['usuario'] ?? '';
-    $senha = $_POST['senha'] ?? '';
+    $usuario = ucfirst(trim($_POST['usuario'] ?? ''));
+    $senha = ucfirst(trim($_POST['senha'] ?? ''));
 
     if(!empty($senha) && !empty($usuario)){
 
@@ -131,26 +131,69 @@ function criarConta(){
 }
 
 
-#Verificar sessão
+#Setar sessão
 
 function verificarSessao(){
   if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
   }
+  return true;
 }
 
 #Verificar login
 
 function verificarLogin(){
-  if(verificarSessao()){
-    if(isset($_SESSION['id_usuario'])){
-      return true;
-    } else {
-      return false;
-    }
+  verificarSessao();
+
+  if(isset($_SESSION['id_usuario'])){
+    return true;
+  } else {
+    return false;
   }
 }
 
+
+#Editar filme
+
+function editarFilme($pdo){
+  if(isset($_GET['id'])){
+    try {
+      $idFilme = $_GET['id'];
+    
+      $stmt = $pdo->prepare('SELECT * FROM filmes WHERE id = :id');
+      $stmt->bindParam(':id', $idFilme);
+      $stmt->execute();
+      $filme = $stmt->fetch();
+    } catch(PDOException $e) {
+      echo '<div class="alert alert-danger" role="alert">Erro ao acessar o banco de dados: ' . $e->getMessage() . '</div>';
+    }
+
+    if($filme){
+      if(verificarPOST()){
+        $nomeFilme = ucfirst(trim($_POST['nome'] ?? ''));
+        $notaFilme = ucfirst(trim($_POST['nota'] ?? ''));
+
+        if (!empty($nomeFilme) && !empty($notaFilme)){
+          try {
+            $stmt = $pdo->prepare('UPDATE filmes SET titulo = :titulo, nota = :nota WHERE id = :id');
+            $stmt->bindParam(':titulo', $nomeFilme);
+            $stmt->bindParam(':nota', $notaFilme);
+            $stmt->bindParam(':id', $idFilme);
+            $stmt->execute();
+            
+            echo '<div class="alert alert-success" role="alert">Filme atualizado com sucesso!</div>';
+            header('Location: listarFilmes.php');
+            exit();
+          } catch (PDOException $e) {
+            echo '<div class="alert alert-danger" role="alert">Erro ao acessar o banco de dados: ' . $e->getMessage() . '</div>';
+          }
+        } else {
+          echo '<div class="alert alert-warning" role="alert">Preencha todos os campos</div>';
+        }
+      }
+    }
+  }
+}
 
 
 

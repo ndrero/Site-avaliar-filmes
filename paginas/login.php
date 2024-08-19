@@ -3,6 +3,14 @@
 require_once __DIR__ . "/../conexao.php";
 require_once __DIR__ . "/../funcoes.php";
 
+session_start();
+
+if (isset($_SESSION['alerta_login'])) {
+    echo '<div class="alert alert-warning" role="alert">'.$_SESSION['alerta_login'].'</div>';
+    unset($_SESSION['login_warning']);
+}
+
+
 logarConta($pdo);
 
 ?>
@@ -47,9 +55,9 @@ logarConta($pdo);
           <form action="/login" method="POST">
             <input type="text" name="usuario" placeholder="Nome de Usuário" required>
             <input type="password" name="senha" placeholder="Senha" required>
-            <button class="btn btn-primary" type="submit">Enviar</button>
+            <button class="btn btn-primary btn-sm" type="submit">Enviar</button>
           </form>
-
+          <br>
           <p>Ainda não possui uma conta? <a href="criarConta.php">Crie sua conta</a></p>
         </div>
       </div>

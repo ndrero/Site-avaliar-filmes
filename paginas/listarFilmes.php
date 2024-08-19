@@ -3,13 +3,14 @@
 require_once __DIR__ . "/../conexao.php";
 require_once  __DIR__ . "/../funcoes.php";
 
+verificarSessao();
 
-if(verificarSessao()){
-  if(!verificarLogin()){
+if (!verificarLogin()) {
+    $_SESSION['alerta_login'] = 'Você precisa estar logado';
     header('Location: login.php');
-    echo '<div class="alert alert-warning" role="alert">Você precisa estar logado</div>';
-  }
+    exit();
 }
+
 
 excluirFilme($pdo);
 $resultados = listaDeFilmes($pdo);
@@ -79,8 +80,8 @@ $resultados = listaDeFilmes($pdo);
                 <td> <?php echo $item['titulo']; ?> </td>
                 <td> <?php echo $item['nota']; ?> </td>
                 <td><a class="btn btn-danger btn-sm" role="button" href="?acao=excluir&id=<?php echo $item['idfilmes'] ?>">Excluir</a></td>
-                <td><a class="btn btn-primary btn-sm" role="button" href="?acao=excluir&id=<?php echo $item['idfilmes'] ?>">Editar</a></td>
-              </tr>
+                <td><a class="btn btn-primary btn-sm" role="button" href="editarFilme.php?id=<?php echo $filme['id']; ?>">Editar</a></td>
+                </tr>
               <?php endforeach ?>
             </tbody>
           </table>

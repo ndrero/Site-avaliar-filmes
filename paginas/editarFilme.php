@@ -10,8 +10,8 @@ if (!verificarLogin()) {
     exit();
 }
 
+editarFilme($pdo);
 
-registrarFilme($pdo);
 ?>
 
 <!DOCTYPE html>
@@ -47,24 +47,22 @@ registrarFilme($pdo);
     <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
       <div class="card" style="width: 500px;">
         <div class="card-header">
-          <h3 class="mt-2">Avaliar filme</h3>
+          <h3 class="mt-2">Editar filme</h3>
         </div>
         <div class="card-body">
 
           <form action="registrarFilme.php" method="post">
             <div class="mb-3">
-              <label for="nomeInput" class="form-label">Filme</label>
-              <input name="nome" type="text" class="form-control" id="nomeInput" placeholder="">
+              <label for="nome" class="form-label">Filme</label>
+              <input name="nome" type="text" class="form-control" id="nome" value="<?php echo htmlspecialchars($filme['titulo']); ?>" required>
             </div>
             <div class="mb-3">
-              <label for="notaInput" class="form-label">Nota</label>
-              <input type="number" class="form-control" id="notaInput" name="nota" step="0.1" min="0" max="5">
+              <label for="nota" class="form-label">Nota</label>
+              <input type="number" class="form-control" id="nota" name="nota" step="0.1" min="0" max="5" value="<?php echo htmlspecialchars($filme['nota']); ?>" required>
             </div>
-            <button class="btn btn-primary" type="submit">Enviar</button>
+            <button class="btn btn-primary" type="submit">Atualizar</button>
           </form>
 
-          <br>
-          <a href="listarFilmes.php" class="btn btn-secondary">Ver lista de filmes</a>
         </div>
       </div>
     </div>
