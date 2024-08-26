@@ -6,14 +6,17 @@ require_once  __DIR__ . "/../funcoes.php";
 verificarSessao();
 
 if (!verificarLogin()) {
-    $_SESSION['alerta_login'] = 'Você precisa estar logado';
+    $_SESSION['error'] = 'Você precisa estar logado';
     header('Location: login.php');
     exit();
 }
 
 
-excluirFilme($pdo);
-$resultados = listaDeFilmes($pdo);
+excluirFilme();
+$resultados = listaDeFilmes();
+editarFilme();
+fazerLogout();
+
 
 ?>
 
@@ -36,17 +39,14 @@ $resultados = listaDeFilmes($pdo);
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-          <a class="nav-link active" aria-current="page" href="/../paginas/criarConta.php">Criar conta</a>
-          <a class="nav-link active" aria-current="page" href="/../paginas/login.php">Fazer login</a>
-          <a class="nav-link" href="/../paginas/listarFilmes.php">Listar filmes</a>
-          <a class="nav-link" href="/../paginas/registrarFilme.php">Registrar filme</a>
-        </div>
+        <?php require_once "../comuns/navbar.php"; ?>
       </div>
     </div>
   </nav>
 
-
+  <?php include "../comuns/exibirErro.php"; ?>
+  <?php include "../comuns/exibirSucesso.php"; ?>
+    
   <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
     <div class="card" style="width: 500px;">
 
@@ -76,11 +76,11 @@ $resultados = listaDeFilmes($pdo);
             <tbody>
               <?php foreach ($resultados as $item): ?>
               <tr>
-                <th scope="row"> <?php echo $item['idfilmes']; ?> </th>
+                <th scope="row"> <?php echo $item['id_filmes']; ?> </th>
                 <td> <?php echo $item['titulo']; ?> </td>
                 <td> <?php echo $item['nota']; ?> </td>
-                <td><a class="btn btn-danger btn-sm" role="button" href="?acao=excluir&id=<?php echo $item['idfilmes'] ?>">Excluir</a></td>
-                <td><a class="btn btn-primary btn-sm" role="button" href="editarFilme.php?id=<?php echo $filme['id']; ?>">Editar</a></td>
+                <td><a class="btn btn-danger btn-sm" role="button" href="?acao=excluir&id=<?php echo $item['id_filmes'] ?>">Excluir</a></td>
+                <td><a class="btn btn-primary btn-sm" role="button" href="editarFilme.php?id=<?php echo $item['id_filmes']; ?>">Editar</a></td>
                 </tr>
               <?php endforeach ?>
             </tbody>

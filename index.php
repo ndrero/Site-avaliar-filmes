@@ -1,7 +1,18 @@
 <?php 
 
+session_start();
+
 require_once __DIR__ . "/conexao.php";
 require_once  __DIR__ . "/funcoes.php";
+
+if (!verificarLogin()) {
+  $_SESSION['error'] = 'Você precisa estar logado';
+  header('Location: paginas/login.php');
+  exit();
+}
+
+fazerLogout();
+
 
 ?>
 
@@ -23,15 +34,12 @@ require_once  __DIR__ . "/funcoes.php";
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-          <a class="nav-link active" aria-current="page" href="/../paginas/criarConta.php">Criar conta</a>
-          <a class="nav-link active" aria-current="page" href="/../paginas/login.php">Fazer login</a>
-          <a class="nav-link" href="/../paginas/listarFilmes.php">Listar filmes</a>
-          <a class="nav-link" href="/../paginas/registrarFilme.php">Registrar filme</a>
-        </div>
+        <?php require_once "comuns/navbar.php"; ?>
       </div>
     </div>
   </nav>
+
+  <h1>Bem vindo, <?php echo isset($_SESSION['nome_usuario']) ? ucfirst($_SESSION['nome_usuario']) : 'visitante'; ?> </h1>
 
 
 

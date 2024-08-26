@@ -5,12 +5,15 @@ require_once __DIR__ . "/../funcoes.php";
 verificarSessao();
 
 if (!verificarLogin()) {
-    $_SESSION['alerta_login'] = 'Você precisa estar logado';
+    $_SESSION['error'] = 'Você precisa estar logado';
     header('Location: login.php');
     exit();
 }
 
-editarFilme($pdo);
+$filme = selecionarFilme();
+editarFilme();
+fazerLogout();
+
 
 ?>
 
@@ -32,16 +35,14 @@ editarFilme($pdo);
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-          <div class="navbar-nav">
-            <a class="nav-link active" aria-current="page" href="/../paginas/criarConta.php">Criar conta</a>
-            <a class="nav-link active" aria-current="page" href="/../paginas/login.php">Fazer login</a>
-            <a class="nav-link" href="/../paginas/listarFilmes.php">Listar filmes</a>
-            <a class="nav-link" href="/../paginas/registrarFilme.php">Registrar filme</a>
-          </div>
+          <?php require_once "../comuns/navbar.php"; ?>
         </div>
       </div>
     </nav>
 
+    <?php include "../comuns/exibirErro.php"; ?>
+    <?php include "../comuns/exibirSucesso.php"; ?>
+    
     <!-- Avaliar filme -->
 
     <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
@@ -51,7 +52,7 @@ editarFilme($pdo);
         </div>
         <div class="card-body">
 
-          <form action="registrarFilme.php" method="post">
+          <form action="editarFilme.php?id=<?php echo $filme['id_filmes']; ?>" method="post">
             <div class="mb-3">
               <label for="nome" class="form-label">Filme</label>
               <input name="nome" type="text" class="form-control" id="nome" value="<?php echo htmlspecialchars($filme['titulo']); ?>" required>
@@ -60,7 +61,7 @@ editarFilme($pdo);
               <label for="nota" class="form-label">Nota</label>
               <input type="number" class="form-control" id="nota" name="nota" step="0.1" min="0" max="5" value="<?php echo htmlspecialchars($filme['nota']); ?>" required>
             </div>
-            <button class="btn btn-primary" type="submit">Atualizar</button>
+            <button class="btn btn-primary" type="submit" href="listarFilmes.php">Atualizar</button>
           </form>
 
         </div>

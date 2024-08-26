@@ -3,15 +3,9 @@
 require_once __DIR__ . "/../conexao.php";
 require_once __DIR__ . "/../funcoes.php";
 
-session_start();
+logarConta();
+fazerLogout();
 
-if (isset($_SESSION['alerta_login'])) {
-    echo '<div class="alert alert-warning" role="alert">'.$_SESSION['alerta_login'].'</div>';
-    unset($_SESSION['login_warning']);
-}
-
-
-logarConta($pdo);
 
 ?>
 
@@ -34,15 +28,13 @@ logarConta($pdo);
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-link active" aria-current="page" href="/../paginas/criarConta.php">Criar conta</a>
-        <a class="nav-link active" aria-current="page" href="/../paginas/login.php">Fazer login</a>
-        <a class="nav-link" href="/../paginas/listarFilmes.php">Listar filmes</a>
-        <a class="nav-link" href="/../paginas/registrarFilme.php">Registrar filme</a>
-      </div>
+      <?php require_once "../comuns/navbarLimitada.php"; ?> 
     </div>
   </div>
   </nav>
+
+  <?php include "../comuns/exibirErro.php"; ?>
+  <?php include "../comuns/exibirSucesso.php"; ?>
 
   <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
     <div class="card" style="width: 500px;">
@@ -52,7 +44,7 @@ logarConta($pdo);
       <div class="card-body">
         <div class="login-container">
 
-          <form action="/login" method="POST">
+          <form action="login.php" method="POST">
             <input type="text" name="usuario" placeholder="Nome de Usuário" required>
             <input type="password" name="senha" placeholder="Senha" required>
             <button class="btn btn-primary btn-sm" type="submit">Enviar</button>

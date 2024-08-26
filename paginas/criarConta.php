@@ -3,7 +3,9 @@
 require_once __DIR__ . "/../conexao.php";
 require_once __DIR__ . "/../funcoes.php";
 
-criarConta($pdo);
+criarConta();
+fazerLogout();
+
 ?>
 
 <!DOCTYPE html>
@@ -19,20 +21,20 @@ criarConta($pdo);
   <!-- Nav -->
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-      <a class="navbar-brand" href="/../index.php>Avaliar filmes</a>
+      <a class="navbar-brand" href="/../index.php">Avaliar filmes</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-          <a class="nav-link active" aria-current="page" href="/../paginas/criarConta.php">Criar conta</a>
-          <a class="nav-link active" aria-current="page" href="/../paginas/login.php">Fazer login</a>
-          <a class="nav-link" href="/../paginas/listarFilmes.php">Listar filmes</a>
-          <a class="nav-link" href="/../paginas/registrarFilme.php">Registrar filme</a>
-        </div>
+        <?php require_once "../comuns/navbarLimitada.php"; ?>
       </div>
     </div>
   </nav>
+
+
+  <?php include "../comuns/exibirErro.php"; ?>
+  <?php include "../comuns/exibirSucesso.php"; ?>
+
 
   <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
     <div class="card" style="width: 500px;">
@@ -41,7 +43,7 @@ criarConta($pdo);
       </div>
 
       <div class="card-body">
-        <form action="login.php" method="POST">
+        <form action="criarConta.php" method="POST">
           <div class="mb-3">
             <label for="usuario" class="form-label">Usuário:</label>
             <input type="text" id="usuario" name="usuario" class="form-control" required>

@@ -5,13 +5,14 @@ require_once __DIR__ . "/../funcoes.php";
 verificarSessao();
 
 if (!verificarLogin()) {
-    $_SESSION['alerta_login'] = 'Você precisa estar logado';
-    header('Location: login.php');
-    exit();
+  $_SESSION['error'] = 'Você precisa estar logado';
+  header('Location: login.php');
+  exit();
 }
 
+registrarFilme();
+fazerLogout();
 
-registrarFilme($pdo);
 ?>
 
 <!DOCTYPE html>
@@ -32,15 +33,13 @@ registrarFilme($pdo);
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-          <div class="navbar-nav">
-            <a class="nav-link active" aria-current="page" href="/../paginas/criarConta.php">Criar conta</a>
-            <a class="nav-link active" aria-current="page" href="/../paginas/login.php">Fazer login</a>
-            <a class="nav-link" href="/../paginas/listarFilmes.php">Listar filmes</a>
-            <a class="nav-link" href="/../paginas/registrarFilme.php">Registrar filme</a>
-          </div>
+          <?php require_once "../comuns/navbar.php"; ?>
         </div>
       </div>
     </nav>
+
+    <?php include "../comuns/exibirErro.php"; ?> 
+    <?php include "../comuns/exibirSucesso.php"; ?>
 
     <!-- Avaliar filme -->
 
