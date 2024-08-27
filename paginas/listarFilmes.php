@@ -16,6 +16,7 @@ excluirFilme();
 $resultados = listaDeFilmes();
 editarFilme();
 fazerLogout();
+$indice = 0;
 
 
 ?>
@@ -46,7 +47,7 @@ fazerLogout();
 
   <?php include "../comuns/exibirErro.php"; ?>
   <?php include "../comuns/exibirSucesso.php"; ?>
-    
+
   <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
     <div class="card" style="width: 500px;">
 
@@ -76,7 +77,7 @@ fazerLogout();
             <tbody>
               <?php foreach ($resultados as $item): ?>
               <tr>
-                <th scope="row"> <?php echo $item['id_filmes']; ?> </th>
+                <th scope="row"> <?php echo $indice++; ?> </th>
                 <td> <?php echo $item['titulo']; ?> </td>
                 <td> <?php echo $item['nota']; ?> </td>
                 <td><a class="btn btn-danger btn-sm" role="button" href="?acao=excluir&id=<?php echo $item['id_filmes'] ?>">Excluir</a></td>

@@ -18,16 +18,18 @@ function registrarFilme(){
   if(verificarPOST()){
     $nomeFilme = ucfirst(trim($_POST['nome'] ?? ''));
     $notaFilme = trim($_POST['nota'] ?? '');
+    $idUsuario = trim($_SESSION['id_usuario'] ?? '');
   
-    if (!empty($nomeFilme) && !empty($notaFilme)){
+    if (!empty($nomeFilme) && !empty($notaFilme) && !empty($_SESSION['id_usuario'])){
       try {
-        $stmt = $pdo->prepare('INSERT INTO filmes (titulo, nota) VALUES (:titulo, :nota)');
+        $stmt = $pdo->prepare('INSERT INTO filmes (titulo, nota, id_usuario) VALUES (:titulo, :nota, :id_usuario)');
         $stmt->bindParam(':titulo', $nomeFilme);
         $stmt->bindParam(':nota', $notaFilme);
+        $stmt->bindParam(':id_usuario', $idUsuario);
         $stmt->execute();
         $_SESSION['success'] = 'Filme registrado com sucesso'; 
       } catch (PDOException $e) {
-        $_SESSION['error'] = 'Erro ao registrar no banco de dados';   
+        $_SESSION['error'] = 'Erro ao registrar no banco de dados. Erro:' . $e->getMessage(); ;   
       }
     } else {
       $_SESSION['error'] = 'Preencha todos os campos!';
@@ -61,11 +63,13 @@ function excluirFilme(){
   function listaDeFilmes(){
     global $pdo;
     try {
-      $stmt = $pdo->prepare('SELECT * FROM filmes');
+      $idUsuario = trim($_SESSION['id_usuario'] ?? '');
+      $stmt = $pdo->prepare('SELECT * FROM filmes WHERE id_usuario = :id_usuario');
+      $stmt->bindParam(':id_usuario', $idUsuario);
       $stmt->execute();
       return $stmt->fetchAll();
     } catch (PDOException $e){
-      $_SESSION['error'] = 'Erro ao registrar no banco de dados';  
+      $_SESSION['error'] = 'Erro ao acessar banco de dados';  
     }
   }
 

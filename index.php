@@ -39,7 +39,13 @@ fazerLogout();
     </div>
   </nav>
 
-  <h1>Bem vindo, <?php echo isset($_SESSION['nome_usuario']) ? ucfirst($_SESSION['nome_usuario']) : 'visitante'; ?> </h1>
+  <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div>
+      <h1>Bem vindo, <?php echo isset($_SESSION['nome_usuario']) ? ucfirst($_SESSION['nome_usuario']) : 'visitante'; ?> </h1>
+    </div>
+  </div>
+
+
 
 
 
